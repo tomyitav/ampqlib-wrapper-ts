@@ -6,11 +6,17 @@ export class MessageManager {
 
     private channel: Channel;
     private messagesExchange = "messages";
+    private wasInitCalled: boolean = false;
     constructor(private brokerUrl: string) {
     }
 
     public async init() {
+        if(this.wasInitCalled) {
+            console.log('Init was already called');
+            return;
+        }
         try {
+            this.wasInitCalled = true;
             const connection = await AmqpLib.connect(this.brokerUrl, {});
             console.log('Connected to broker...');
             this.channel = await connection.createChannel();
